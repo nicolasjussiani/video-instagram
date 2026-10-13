@@ -1,0 +1,114 @@
+[
+  {
+    "type": "SetSceneName",
+    "data": {
+      "sceneName": "Cena",
+      "newSceneName": "Reels - Rosto e jogo"
+    }
+  },
+  {
+    "type": "CreateInput",
+    "data": {
+      "sceneName": "Reels - Rosto e jogo",
+      "inputName": "Jogo - tela cheia",
+      "inputKind": "game_capture",
+      "inputSettings": {
+        "capture_mode": "any_fullscreen",
+        "capture_cursor": true,
+        "anti_cheat_hook": true
+      },
+      "sceneItemEnabled": true
+    }
+  },
+  {
+    "type": "CreateInput",
+    "data": {
+      "sceneName": "Reels - Rosto e jogo",
+      "inputName": "Camera - sem fundo",
+      "inputKind": "dshow_input",
+      "inputSettings": {
+        "active": true
+      },
+      "sceneItemEnabled": true
+    }
+  },
+  {
+    "type": "CreateSourceFilter",
+    "data": {
+      "sourceName": "Camera - sem fundo",
+      "filterName": "Remover fundo do ambiente",
+      "filterKind": "background_removal",
+      "filterSettings": {
+        "model_select": "models/mediapipe.with_runtime_opt.ort",
+        "useGPU": "cpu",
+        "numThreads": 2,
+        "enable_threshold": true,
+        "threshold": 0.5,
+        "smooth_contour": 0.5,
+        "feather": 0.05,
+        "blur_background": 0
+      }
+    }
+  },
+  {
+    "type": "CreateInput",
+    "data": {
+      "sceneName": "Reels - Rosto e jogo",
+      "inputName": "Audio do jogo",
+      "inputKind": "wasapi_output_capture",
+      "inputSettings": {
+        "device_id": "default"
+      },
+      "sceneItemEnabled": true
+    }
+  },
+  {
+    "type": "CreateInput",
+    "data": {
+      "sceneName": "Reels - Rosto e jogo",
+      "inputName": "Microfone - voz",
+      "inputKind": "wasapi_input_capture",
+      "inputSettings": {
+        "device_id": "default"
+      },
+      "sceneItemEnabled": true
+    }
+  },
+  {
+    "type": "SetInputVolume",
+    "data": {
+      "inputName": "Audio do jogo",
+      "inputVolumeDb": -12
+    }
+  },
+  {
+    "type": "SetInputVolume",
+    "data": {
+      "inputName": "Microfone - voz",
+      "inputVolumeDb": 0
+    }
+  },
+  {
+    "type": "CreateSourceFilter",
+    "data": {
+      "sourceName": "Microfone - voz",
+      "filterName": "Reducao de ruido",
+      "filterKind": "noise_suppress_filter_v2",
+      "filterSettings": {
+        "method": "rnnoise"
+      }
+    }
+  },
+  {
+    "type": "CreateSourceFilter",
+    "data": {
+      "sourceName": "Microfone - voz",
+      "filterName": "Evitar estouro",
+      "filterKind": "limiter_filter",
+      "filterSettings": {
+        "threshold": -1,
+        "release_time": 60
+      }
+    }
+  }
+]
